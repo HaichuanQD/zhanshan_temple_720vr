@@ -1,0 +1,681 @@
+﻿<krpano version="1.19" title="Virtual Tour">
+
+	<include url="skin/vtourskin.xml" />
+	<plugin name="soundinterface"
+        url.flash="plugins/soundinterface.swf"
+        url.html5="plugins/soundinterface.js"
+        preload="true"
+		keep="true" />
+
+	<!-- customize skin settings: maps, gyro, webvr, thumbnails, tooltips, layout, design, ... -->
+	<skin_settings maps="false"
+	               maps_type="google"
+	               maps_bing_api_key=""
+	               maps_google_api_key=""
+	               maps_zoombuttons="false"
+	               gyro="true"
+	               webvr="true"
+	               webvr_gyro_keeplookingdirection="false"
+	               webvr_prev_next_hotspots="true"
+	               littleplanetintro="false"
+	               title="false"
+	               thumbs="false"
+	               thumbs_width="120" thumbs_height="80" thumbs_padding="10" thumbs_crop="0|40|240|160"
+	               thumbs_opened="false"
+	               thumbs_text="false"
+	               thumbs_dragging="true"
+	               thumbs_onhoverscrolling="false"
+	               thumbs_scrollbuttons="false"
+	               thumbs_scrollindicator="false"
+	               thumbs_loop="false"
+	               tooltips_buttons="false"
+	               tooltips_thumbs="false"
+	               tooltips_hotspots="false"
+	               tooltips_mapspots="false"
+	               deeplinking="false"
+	               loadscene_flags="MERGE"
+	               loadscene_blend="OPENBLEND(0.5, 0.0, 0.75, 0.05, linear)"
+	               loadscene_blend_prev="SLIDEBLEND(0.5, 180, 0.75, linear)"
+	               loadscene_blend_next="SLIDEBLEND(0.5,   0, 0.75, linear)"
+	               loadingtext="读取中..."
+	               layout_width="100%"
+	               layout_maxwidth="814"
+	               controlbar_width="-24"
+	               controlbar_height="10"
+	               controlbar_offset="20"
+	               controlbar_offset_closed="-40"
+	               controlbar_overlap.no-fractionalscaling="10"
+	               controlbar_overlap.fractionalscaling="0"
+	               design_skin_images="vtourskin.png"
+	               design_bgcolor="0x2D3E50"
+	               design_bgalpha="0"
+	               design_bgborder="0"
+	               design_bgroundedge="1"
+	               design_bgshadow=""
+	               design_thumbborder_bgborder="3 0xFFFFFF 1.0"
+	               design_thumbborder_padding="2"
+	               design_thumbborder_bgroundedge="0"
+	               design_text_css="color:#FFFFFF; font-family:Arial;"
+	               design_text_shadow="1"
+	               />
+
+	<!--
+	    For an alternative skin design either change the <skin_settings> values 
+	    from above or optionally include one of the predefined designs from below.
+	-->
+	<!-- <include url="skin/vtourskin_design_flat_light.xml"  /> -->
+	<!-- <include url="skin/vtourskin_design_glass.xml"       /> -->
+	<!-- <include url="skin/vtourskin_design_ultra_light.xml" /> -->
+	<!-- <include url="skin/vtourskin_design_117.xml"         /> -->
+	<!-- <include url="skin/vtourskin_design_117round.xml"    /> -->
+	<!-- <include url="skin/vtourskin_design_black.xml"       /> -->
+
+
+	<!-- startup action - load the first scene -->
+	<action name="startup" autorun="onstart">
+		if(startscene === null OR !scene[get(startscene)], copy(startscene,scene[0].name); );
+		loadscene(get(startscene), null, MERGE);
+		if(startactions !== null, startactions() );
+		jscall(
+		
+		var event = new Event('setskin');
+	    krpano.dispatchEvent(event);
+	    );
+	</action>
+	<action name="do_crop_animation" scope="local" args="framewidth, frameheight, framerate">
+		<!-- define local variables -->
+		calc(local.xframes, (caller.imagewidth /framewidth) BOR 0);
+		calc(local.frames, xframes * ((caller.imageheight / frameheight) BOR 0));
+		def(local.frame, integer, 0);
+		
+		<!-- set the first frame -->
+		calc(caller.crop, '0|0|' + framewidth + '|' + frameheight);
+		
+		<!-- do the animation -->
+		setinterval(calc('crop_anim_' + caller.name), calc(1.0 / framerate),
+			if(caller.loaded,
+				inc(frame);
+				if(frame GE frames, if(caller.onlastframe !== null, callwith(caller, onlastframe() ) ); set(frame,0); );
+				mod(xpos, frame, xframes);
+				div(ypos, frame, xframes);
+				Math.floor(ypos);
+				mul(xpos, framewidth);
+				mul(ypos, frameheight);
+				calc(caller.crop, xpos + '|' + ypos + '|' + framewidth + '|' + frameheight);
+			  ,
+				<!-- stop the interval when the hotspot gets removed -->
+				clearinterval(calc('crop_anim_' + caller.name));
+			);
+		);
+	</action>
+
+	<events name="skin_events_dispatch" onnewscene="change_scene();" keep="true"/>
+
+	<action name="change_scene">
+
+	jscall(
+	  var event = document.createEvent('Event');
+	  event.initEvent('build', true, true);
+	  krpano.dispatchEvent(event);
+	  ) );
+
+
+	</action>
+
+<action name="edit_sprite" type="Javascript">
+
+
+<![CDATA[ 
+
+var html = `<a  href="img/${args[1]}.jpg" data-lightbox="${args[1]}" data-title="${args[2]}" ><div style="width:100%;height:100%;"></div></a><div style="text-align:center;text-shadow: 1px 1px 3px #000000;width:100px;margin-left:-30px;height:20px;font-size:14px;">${args[2]}</div>`; 
+var hs = krpano.get('hotspot['+args[1]+']'); 
+
+var htmlnoclick = `<div style="width:100%;height:100%;"></div><div style="text-align:center;text-shadow: 1px 1px 3px #000000;width:100px;margin-left:-30px;height:20px;font-size:14px;">${args[2]}</div>`; 
+var hs = krpano.get('hotspot['+args[1]+']'); 
+
+var aele = `<a class="${args[1]}_link" href="img/${args[1]}.jpg" data-lightbox="${args[1]}" data-title="${args[2]}" ></a>`;
+
+hs.sprite.id=args[1]; 
+var poly = args[1] + "_poly";
+var link = args[1] + "_link";
+
+if(krpano.get(`hotspot[${poly}]`)){
+ document.getElementById(args[1]).innerHTML = htmlnoclick; 
+ console.log(`.${link}`);
+ console.log($(`.${link}`).length);
+ if( $(`.${link}`).length == 0 ){
+ $("#link-area").append(aele);}
+
+ 
+ }else
+ {document.getElementById(args[1]).innerHTML = html};
+
+
+
+
+
+ ]]>
+<!-- document.getElementById(args[1]).style.cssText = 'position:absolute;'; -->
+<!--必须要有absolute属性 -->
+
+</action> 
+
+
+
+<action name="click_hotspot" type="Javascript">
+document.querySelector("#"+args[1]+" a").click();
+</action>
+
+<action name="click_polyspot" type="Javascript">
+ document.querySelector("."+args[1]+"_link").click();
+</action>
+
+<!-- 这个函数实现了相关多边形热点闪两下与弹出LIGHTBOX的实现，相关的多边形热点将热点名称与触发热点多一个“_poly”即可 -->
+<action name="click_intro" type="Javascript" >
+
+
+var poly = args[1]+"_poly";
+var plink = args[1]+"_link";
+if(krpano.get(`hotspot[${poly}]`)){
+krpano.set(`hotspot[${args[1]}].enabled`,false);
+
+krpano.call(`flash_twice(${poly})`);
+var outimage = function(){
+    document.querySelector(`.${plink}`).click();
+    krpano.set(`hotspot[${args[1]}].enabled`,true);
+};
+setTimeout( outimage,1700);
+
+
+}else{
+krpano.call(`click_hotspot(${args[1]})`);
+};
+
+
+
+</action>
+
+<action name="flash_twice">
+set(hotspot[%1].visible,true);
+tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1].alpha,0,0.4,default,tween(hotspot[%1].alpha,1,0.4,default,tween(hotspot[%1].alpha,0,0.4,default,set(hotspot[%1].visible,false);))));
+
+
+
+</action>
+
+<style name="intro_hotspot" renderer="css3d" url="img/animatedhotspot_white.png" onloaded="do_crop_animation(40,40, 30);edit_sprite(get(name),get(imgtitle))" onclick="click_intro(get(name));"/>
+
+<style name="poly_hs" visible="false" enalbed="false" exit="true" alpha="0" handcursor="false" />
+
+	
+	<scene name="scene_IMG_0322_Panorama_ok" title="山门" onstart="" thumburl="panos/IMG_0322_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-183.439" vlookat="-8.377" fovtype="MFOV" fov="108.762" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0322_Panorama_ok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0322_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0322_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0322_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+
+		
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="176.411" atv="11.868" linkedscene="scene_img_0329_panoramaok" />
+		<hotspot name="shanmen1" imgtitle="山门"  style="intro_hotspot"  ath="-162.39" atv="1.0898"  />
+
+        <!-- <hotspot name="lion">
+		<point ath="-135.9618" atv="9.3844"/><point ath="-125.9137" atv="11.2450"/><point ath="-121.4129" atv="9.5447"/><point ath="-121.3424" atv="9.4081"/><point ath="-121.3401" atv="9.0993"/><point ath="-121.4071" atv="8.7898"/><point ath="-121.4050" atv="8.5152"/><point ath="-121.4381" atv="8.3090"/><point ath="-121.6794" atv="8.1696"/><point ath="-122.1976" atv="8.0962"/><point ath="-122.6115" atv="8.0234"/><point ath="-122.7436" atv="7.4734"/><point ath="-123.7756" atv="7.4273"/><point ath="-123.8581" atv="3.3277"/><point ath="-123.3126" atv="3.2626"/><point ath="-123.3064" atv="2.7523"/><point ath="-121.3928" atv="2.3502"/><point ath="-121.3820" atv="0.9242"/><point ath="-121.6195" atv="0.8225"/><point ath="-121.9939" atv="0.8560"/><point ath="-122.0264" atv="0.6868"/><point ath="-121.9572" atv="0.5517"/><point ath="-121.8807" atv="-0.4259"/><point ath="-121.9803" atv="-0.6611"/><point ath="-122.6551" atv="-0.8618"/><point ath="-122.5499" atv="-1.2304"/><point ath="-122.5458" atv="-1.6316"/><point ath="-122.6119" atv="-1.7649"/><point ath="-122.7468" atv="-1.7646"/><point ath="-122.8673" atv="-1.9091"/><point ath="-122.8648" atv="-2.5894"/><point ath="-122.7949" atv="-3.0650"/><point ath="-122.8953" atv="-3.5730"/><point ath="-122.9267" atv="-4.2827"/><point ath="-122.9922" atv="-4.9563"/><point ath="-123.0252" atv="-5.2250"/><point ath="-122.9232" atv="-5.2257"/><point ath="-122.7867" atv="-5.3609"/><point ath="-122.6839" atv="-5.5630"/><point ath="-122.6154" atv="-5.6976"/><point ath="-122.4448" atv="-5.8328"/><point ath="-122.2403" atv="-5.9345"/><point ath="-122.1376" atv="-6.1360"/><point ath="-122.1026" atv="-6.4372"/><point ath="-122.0338" atv="-6.7047"/><point ath="-121.9650" atv="-6.9385"/><point ath="-121.9647" atv="-7.0717"/><point ath="-122.0322" atv="-7.2376"/><point ath="-122.0995" atv="-7.4697"/><point ath="-122.2011" atv="-7.6017"/><point ath="-122.4044" atv="-7.7658"/><point ath="-122.6413" atv="-7.9955"/><point ath="-122.8107" atv="-8.0930"/><point ath="-123.0821" atv="-8.0573"/><point ath="-123.1496" atv="-8.1227"/><point ath="-123.2847" atv="-8.2532"/><point ath="-123.5212" atv="-8.3824"/><point ath="-123.7917" atv="-8.4121"/><point ath="-124.0629" atv="-8.2770"/><point ath="-124.2325" atv="-8.1430"/><point ath="-124.4019" atv="-8.0418"/><point ath="-124.4352" atv="-8.1403"/><point ath="-124.3328" atv="-8.3392"/><point ath="-124.3656" atv="-8.5361"/><point ath="-124.5674" atv="-8.6645"/><point ath="-124.7345" atv="-8.9242"/><point ath="-124.7670" atv="-9.1527"/><point ath="-124.5938" atv="-9.1388"/><point ath="-124.4231" atv="-9.1411"/><point ath="-124.1157" atv="-9.2455"/><point ath="-123.8422" atv="-9.4493"/><point ath="-123.9448" atv="-9.7149"/><point ath="-124.0816" atv="-10.0128"/><point ath="-124.1842" atv="-10.2108"/><point ath="-124.2526" atv="-10.4090"/><point ath="-124.2184" atv="-10.6085"/><point ath="-124.2185" atv="-10.8733"/><point ath="-124.3551" atv="-10.9043"/><point ath="-124.3551" atv="-11.0365"/><point ath="-124.4235" atv="-11.1014"/><point ath="-124.8330" atv="-11.2594"/><point ath="-125.1057" atv="-11.2543"/><point ath="-125.2761" atv="-11.2511"/><point ath="-125.7184" atv="-11.3409"/><point ath="-125.9563" atv="-11.3358"/><point ath="-126.1261" atv="-11.2991"/><point ath="-126.4314" atv="-11.2921"/><point ath="-126.4992" atv="-11.4219"/><point ath="-126.9055" atv="-11.4775"/><point ath="-127.1760" atv="-11.6015"/><point ath="-127.5136" atv="-11.5923"/><point ath="-127.7496" atv="-11.4875"/><point ath="-127.8842" atv="-11.1891"/><point ath="-128.0189" atv="-11.1853"/><point ath="-128.3550" atv="-11.1755"/><point ath="-128.5564" atv="-11.1367"/><point ath="-128.7240" atv="-10.9680"/><point ath="-128.6904" atv="-10.7724"/><point ath="-128.6233" atv="-10.6760"/><point ath="-128.8244" atv="-10.6044"/><point ath="-128.9918" atv="-10.5010"/><point ath="-129.0921" atv="-10.3010"/><point ath="-129.1254" atv="-10.1028"/><point ath="-129.0250" atv="-9.9082"/><point ath="-128.9915" atv="-9.8104"/><point ath="-129.1253" atv="-9.8395"/><point ath="-129.1921" atv="-9.7058"/><point ath="-129.2589" atv="-9.5061"/><point ath="-129.2922" atv="-9.3071"/><point ath="-129.2588" atv="-9.0767"/><point ath="-129.2587" atv="-8.8120"/><point ath="-129.3254" atv="-8.6777"/><point ath="-129.3921" atv="-8.3444"/><point ath="-129.3252" atv="-8.2133"/><point ath="-129.2584" atv="-8.0820"/><point ath="-129.4253" atv="-7.9118"/><point ath="-129.5253" atv="-7.7099"/><point ath="-129.6253" atv="-7.5078"/><point ath="-130.0579" atv="-7.3313"/><point ath="-130.4562" atv="-7.0557"/><point ath="-130.7210" atv="-6.7500"/><point ath="-130.8201" atv="-6.4814"/><point ath="-130.9852" atv="-6.0446"/><point ath="-130.8530" atv="-5.9473"/><point ath="-131.0181" atv="-5.7437"/><point ath="-131.2490" atv="-5.6056"/><point ath="-131.5454" atv="-5.6994"/><point ath="-131.8083" atv="-5.6938"/><point ath="-132.1034" atv="-5.6209"/><point ath="-132.4631" atv="-5.4469"/><point ath="-132.8932" atv="-4.9085"/><point ath="-133.1666" atv="-4.3759"/><point ath="-133.3742" atv="-3.7763"/><point ath="-133.4832" atv="-3.0762"/><point ath="-133.3886" atv="-2.6429"/><point ath="-133.1616" atv="-2.0750"/><point ath="-133.2318" atv="-1.8063"/><point ath="-133.2029" atv="-1.4369"/><point ath="-133.2062" atv="-1.1678"/><point ath="-132.9767" atv="-0.7304"/><point ath="-134.9151" atv="-0.6930"/><point ath="-135.2797" atv="-0.7257"/><point ath="-135.4475" atv="-0.5913"/><point ath="-135.4528" atv="-0.2561"/><point ath="-135.4338" atv="0.6510"/><point ath="-135.3679" atv="0.6848"/><point ath="-135.5034" atv="0.8527"/><point ath="-135.7703" atv="0.9529"/><point ath="-135.7746" atv="1.2220"/><point ath="-135.8795" atv="1.5581"/><point ath="-135.9828" atv="1.7932"/><point ath="-136.0552" atv="2.1632"/><point ath="-135.9281" atv="2.5012"/><point ath="-135.6630" atv="2.5372"/><point ath="-134.9320" atv="2.6783"/><point ath="-134.6995" atv="2.7817"/><point ath="-134.6384" atv="3.1888"/><point ath="-133.4305" atv="3.3353"/><point ath="-133.4471" atv="7.3153"/><point ath="-134.6033" atv="7.7327"/><point ath="-134.6425" atv="8.1041"/><point ath="-135.9944" atv="8.5417"/> 
+		</hotspot> -->
+
+	</scene>
+
+	<scene name="scene_IMG_0329_Panoramaok" title="天王殿" onstart="" thumburl="panos/IMG_0329_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="106.745" vlookat="-0.056" fovtype="MFOV" fov="108.762" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0329_Panoramaok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0329_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0329_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0329_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="144.610" atv="8.492" linkedscene="scene_img_0337_panoramaok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-74.896" atv="15.490" linkedscene="scene_img_0322_panorama_ok" />
+		<hotspot name="tianwangdian1" imgtitle="天王殿"  style="intro_hotspot"  ath="117.91" atv="-2.67"  />
+		<hotspot name="tianwangdian2" imgtitle="钟楼"  style="intro_hotspot"  ath="173.58" atv="0.65"  /> 
+		<hotspot name="tianwangdian3" imgtitle="鼓楼"  style="intro_hotspot"  ath="36.24" atv="1.69"  /> 
+
+	</scene>
+
+	<scene name="scene_IMG_0337_Panoramaok" title="天王殿东" onstart="" thumburl="panos/IMG_0337_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-116.726" vlookat="-2.974" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0337_Panoramaok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0337_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0337_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0337_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="165.693" atv="8.103" linkedscene="scene_img_0344_panoramaok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="74.787" atv="6.652" linkedscene="scene_img_0329_panoramaok" />
+        <hotspot name="daxiongbaodiandong2" imgtitle="观音殿"  style="intro_hotspot"  ath="-101.84" atv="-10.40"  />
+		<hotspot name="daxiongbaodiandong2_poly" style="poly_hs"> 
+
+		<point ath="-92.2207" atv="-24.6488"/><point ath="-92.1063" atv="-24.9001"/><point ath="-92.1073" atv="-25.1509"/><point ath="-92.1313" atv="-25.3598"/><point ath="-92.0630" atv="-25.6524"/><point ath="-91.8075" atv="-25.5278"/><point ath="-91.4598" atv="-25.5071"/><point ath="-91.2048" atv="-25.5276"/><point ath="-90.9965" atv="-25.4643"/><point ath="-90.7436" atv="-25.1289"/><point ath="-90.5592" atv="-25.0651"/><point ath="-90.6523" atv="-24.9612"/><point ath="-90.7224" atv="-24.8152"/><point ath="-90.7019" atv="-24.3969"/><point ath="-90.4981" atv="-23.9980"/><point ath="-90.0497" atv="-23.0731"/><point ath="-89.7379" atv="-22.5462"/><point ath="-89.5831" atv="-22.2721"/><point ath="-89.5362" atv="-22.2803"/><point ath="-89.4231" atv="-22.2798"/><point ath="-89.4011" atv="-22.1543"/><point ath="-89.3569" atv="-21.9659"/><point ath="-89.3804" atv="-21.7778"/><point ath="-89.7196" atv="-21.4234"/><point ath="-90.3713" atv="-20.9005"/><point ath="-91.4410" atv="-20.0791"/><point ath="-93.9330" atv="-19.0187"/><point ath="-95.0936" atv="-18.7409"/><point ath="-95.0987" atv="-18.9079"/><point ath="-95.1691" atv="-19.0522"/><point ath="-95.2442" atv="-19.3427"/><point ath="-95.4246" atv="-19.4629"/><point ath="-95.6457" atv="-19.4772"/><point ath="-95.8190" atv="-19.3884"/><point ath="-95.9027" atv="-19.2606"/><point ath="-96.0036" atv="-19.0070"/><point ath="-95.9977" atv="-18.8402"/><point ath="-95.9925" atv="-18.6943"/><point ath="-96.0726" atv="-18.4831"/><point ath="-96.0062" atv="-18.4643"/><point ath="-96.7438" atv="-18.3152"/><point ath="-96.8805" atv="-18.4563"/><point ath="-96.8244" atv="-18.6875"/><point ath="-96.8304" atv="-18.8332"/><point ath="-96.9850" atv="-18.8693"/><point ath="-97.5185" atv="-18.5784"/><point ath="-97.8842" atv="-18.4806"/><point ath="-97.6594" atv="-18.3232"/><point ath="-97.5669" atv="-18.2019"/><point ath="-97.4745" atv="-18.0806"/><point ath="-97.8825" atv="-17.9816"/><point ath="-97.9750" atv="-18.1026"/><point ath="-98.1099" atv="-18.2010"/><point ath="-98.1840" atv="-18.3850"/><point ath="-98.2841" atv="-18.2145"/><point ath="-98.2965" atv="-18.0270"/><point ath="-98.1884" atv="-18.0315"/><point ath="-98.2276" atv="-17.9467"/><point ath="-98.7035" atv="-17.9472"/><point ath="-98.7358" atv="-18.1533"/><point ath="-98.8514" atv="-18.2934"/><point ath="-98.9377" atv="-18.2895"/><point ath="-98.9731" atv="-18.1426"/><point ath="-98.9902" atv="-18.0588"/><point ath="-98.9642" atv="-17.9770"/><point ath="-99.1342" atv="-17.9277"/><point ath="-99.2701" atv="-18.0458"/><point ath="-99.4526" atv="-18.2237"/><point ath="-99.5457" atv="-18.3435"/><point ath="-99.6747" atv="-18.3371"/><point ath="-99.6831" atv="-18.1088"/><point ath="-99.6521" atv="-17.9446"/><point ath="-99.8272" atv="-17.9980"/><point ath="-99.9785" atv="-18.0111"/><point ath="-99.9970" atv="-18.3207"/><point ath="-100.1155" atv="-18.5008"/><point ath="-100.2102" atv="-18.2889"/><point ath="-100.3071" atv="-18.1182"/><point ath="-100.4038" atv="-17.9477"/><point ath="-100.5441" atv="-17.7955"/><point ath="-100.4899" atv="-17.6124"/><point ath="-100.4344" atv="-17.4086"/><point ath="-100.4204" atv="-17.1821"/><point ath="-100.2602" atv="-17.0043"/><point ath="-100.1439" atv="-16.8447"/><point ath="-100.0868" atv="-16.7315"/><point ath="-99.8692" atv="-16.6171"/><point ath="-97.7730" atv="-16.0534"/><point ath="-96.4513" atv="-15.7166"/><point ath="-96.6098" atv="-7.9207"/><point ath="-117.9372" atv="-4.7928"/><point ath="-120.2861" atv="-4.8359"/><point ath="-120.4523" atv="-13.5881"/>
+        </hotspot>
+
+	</scene>
+
+	<scene name="scene_IMG_0344_Panoramaok" title="天王殿北" onstart="" thumburl="panos/IMG_0344_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="59.145" vlookat="-4.037" fovtype="MFOV" fov="108.762" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0344_Panoramaok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0344_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0344_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0344_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-155.863" atv="9.219" linkedscene="scene_img_0337_panoramaok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="61.924" atv="-3.780" linkedscene="scene_img_0353_panoramaok" />
+		
+		
+		
+
+	</scene>
+
+	<scene name="scene_IMG_0353_Panoramaok" title="大雄宝殿" onstart="" thumburl="panos/IMG_0353_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-177.200" vlookat="-0.620" fovtype="MFOV" fov="118.372" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0353_Panoramaok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0353_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0353_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0353_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="4.523" atv="29.558" linkedscene="scene_img_0344_panoramaok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-117.991" atv="11.493" linkedscene="scene_img_0365_panoramaok" />
+		<hotspot name="daxiongbaodian1" imgtitle="大雄宝殿"  style="intro_hotspot"  ath="179.10" atv="2.18"  />
+		
+
+	</scene>
+
+	<scene name="scene_IMG_0365_PanoramaOK" title="大雄宝殿东" onstart="" thumburl="panos/IMG_0365_PanoramaOK.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-162.595" vlookat="-3.825" fovtype="MFOV" fov="98.495" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0365_PanoramaOK.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0365_PanoramaOK.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0365_PanoramaOK.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0365_PanoramaOK.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="92.597" atv="4.630" linkedscene="scene_img_0372_panorama_ok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="15.001" atv="6.575" linkedscene="scene_img_0353_panoramaok" />
+		<hotspot name="spot3" style="skin_hotspotstyle" ath="-114.079" atv="5.717" linkedscene="scene_img_0420_panorama_ok" />
+		<hotspot name="daxiongbaodiandong1" imgtitle="世纪晨钟"  style="intro_hotspot"  ath="-74.71" atv="3.01"  />
+		<hotspot name="daxiongbaodiandong2" imgtitle="观音殿"  style="intro_hotspot"  ath="-57.24" atv="1.02"  />
+		<hotspot name="daxiongbaodiandong3" imgtitle="斋堂"  style="intro_hotspot"  ath="-140" atv="0.12"  />
+		<hotspot name="putiyuan1" imgtitle="般若堂"  style="intro_hotspot"  ath="-140.14" atv="-8.93"  />
+		
+		<hotspot name="putiyuan1_poly" style="poly_hs"> 
+            <point ath="-176.9028" atv="-12.9925"/><point ath="-176.1699" atv="-13.6676"/><point ath="-175.3648" atv="-14.5310"/><point ath="-175.0336" atv="-15.0653"/><point ath="-174.6444" atv="-15.1359"/><point ath="-174.1712" atv="-14.9596"/><point ath="-138.4885" atv="-24.5831"/><point ath="-138.2705" atv="-24.9140"/><point ath="-138.1347" atv="-25.2842"/><point ath="-137.7544" atv="-25.3819"/><point ath="-137.2965" atv="-25.2883"/><point ath="-137.3178" atv="-24.6142"/><point ath="-137.0194" atv="-23.5466"/><point ath="-136.5834" atv="-21.7832"/><point ath="-136.0005" atv="-19.8107"/><point ath="-135.1198" atv="-17.5862"/><point ath="-134.4977" atv="-16.8899"/><point ath="-132.8856" atv="-14.9972"/><point ath="-131.9660" atv="-13.9944"/><point ath="-131.4302" atv="-13.5869"/><point ath="-130.7255" atv="-13.3439"/><point ath="-130.4911" atv="-13.3866"/><point ath="-130.5561" atv="-13.6550"/><point ath="-130.0645" atv="-13.3677"/><point ath="-129.8937" atv="-13.2440"/><point ath="-130.0425" atv="-13.0573"/><point ath="-129.9781" atv="-12.8297"/><point ath="-127.4464" atv="-12.2860"/><point ath="-127.4914" atv="-11.7676"/><point ath="-127.4716" atv="-11.4561"/><point ath="-127.7057" atv="-11.2704"/><point ath="-128.5544" atv="-10.9617"/><point ath="-128.7664" atv="-10.8373"/><point ath="-128.9995" atv="-10.7336"/><point ath="-129.6986" atv="-10.8373"/><point ath="-129.9315" atv="-10.7745"/><point ath="-129.9315" atv="-10.7537"/><point ath="-130.0156" atv="-10.4831"/><point ath="-129.8247" atv="-10.2547"/><point ath="-125.6365" atv="-7.6054"/><point ath="-125.3640" atv="-7.6059"/><point ath="-125.0705" atv="-7.5233"/><point ath="-125.0077" atv="-7.6477"/><point ath="-124.7561" atv="-7.5649"/><point ath="-124.5255" atv="-7.3989"/><point ath="-124.4837" atv="-7.2536"/><point ath="-124.1485" atv="-7.1496"/><point ath="-124.2743" atv="-6.9836"/><point ath="-124.5047" atv="-6.7969"/><point ath="-124.6304" atv="-6.4437"/><point ath="-124.6304" atv="-6.2566"/><point ath="-124.8397" atv="-6.1942"/><point ath="-124.9443" atv="-5.9863"/><point ath="-125.0279" atv="-5.6951"/><point ath="-124.9651" atv="-5.6743"/><point ath="-124.8605" atv="-5.4038"/><point ath="-124.6932" atv="-5.2374"/><point ath="-124.6723" atv="-5.0501"/><point ath="-124.7350" atv="-4.9876"/><point ath="-124.7977" atv="-4.8835"/><point ath="-124.7559" atv="-4.6962"/><point ath="-124.9231" atv="-4.8211"/><point ath="-125.1320" atv="-4.8002"/><point ath="-125.1945" atv="-4.6128"/><point ath="-125.0892" atv="-2.2601"/><point ath="-125.1309" atv="-2.3850"/><point ath="-125.5893" atv="-2.4056"/><point ath="-125.8184" atv="-2.3846"/><point ath="-125.9433" atv="-2.2180"/><point ath="-129.1855" atv="-2.5437"/><point ath="-129.1864" atv="-2.9173"/><point ath="-132.3000" atv="-3.3749"/><point ath="-139.7007" atv="-4.4698"/><point ath="-177.9051" atv="-2.1584"/><point ath="-178.1304" atv="-12.5933"/>
+		</hotspot>
+		<hotspot name="daxiongbaodiandong1_poly" style="poly_hs">
+            
+			<point ath="-68.1954" atv="-2.2905"/><point ath="-68.1944" atv="-2.6236"/><point ath="-68.3211" atv="-2.7013"/><point ath="-68.2940" atv="-3.1623"/><point ath="-68.2424" atv="-3.4179"/><point ath="-68.3430" atv="-3.6749"/><point ath="-68.2399" atv="-4.1089"/><point ath="-68.1873" atv="-4.6196"/><point ath="-68.1358" atv="-4.8233"/><point ath="-68.0335" atv="-5.0517"/><point ath="-68.0579" atv="-5.3071"/><point ath="-68.2860" atv="-5.4379"/><point ath="-68.3364" atv="-5.5406"/><point ath="-68.4633" atv="-5.6189"/><point ath="-68.8962" atv="-5.5994"/><point ath="-68.9742" atv="-5.1404"/><point ath="-69.0770" atv="-4.8858"/><point ath="-70.9719" atv="-4.9305"/><point ath="-71.0224" atv="-5.3162"/><point ath="-71.2023" atv="-5.3692"/><point ath="-71.5112" atv="-5.3719"/><point ath="-71.5364" atv="-5.6546"/><point ath="-71.5360" atv="-5.8086"/><point ath="-71.9999" atv="-5.8897"/><point ath="-72.2323" atv="-5.8146"/><point ath="-72.2331" atv="-5.4034"/><point ath="-72.1816" atv="-5.3259"/><point ath="-72.2077" atv="-5.1717"/><point ath="-72.2337" atv="-5.0690"/><point ath="-73.4227" atv="-5.0762"/><point ath="-73.5261" atv="-5.1798"/><point ath="-73.9404" atv="-5.1818"/><point ath="-73.9664" atv="-5.1304"/><point ath="-74.6922" atv="-5.1589"/><point ath="-74.8996" atv="-5.3143"/><point ath="-75.0293" atv="-5.3404"/><point ath="-75.0811" atv="-5.4695"/><point ath="-75.0810" atv="-5.5984"/><point ath="-75.0808" atv="-5.9847"/><point ath="-75.1586" atv="-6.0364"/><point ath="-75.6260" atv="-6.0376"/><point ath="-75.7039" atv="-5.9863"/><point ath="-75.7559" atv="-5.9091"/><point ath="-75.7560" atv="-5.5741"/><point ath="-75.8339" atv="-5.5227"/><point ath="-76.2755" atv="-5.3685"/><point ath="-76.4313" atv="-5.2654"/><point ath="-76.7949" atv="-5.2655"/><point ath="-76.9051" atv="-14.8204"/><point ath="-76.9849" atv="-14.9491"/><point ath="-76.9580" atv="-15.0774"/><point ath="-76.7443" atv="-15.0511"/><point ath="-76.5035" atv="-15.1784"/><point ath="-76.4210" atv="-15.8701"/><point ath="-76.2333" atv="-15.9458"/><point ath="-76.1526" atv="-16.0220"/><point ath="-75.9652" atv="-16.0207"/><point ath="-75.7769" atv="-16.1727"/><point ath="-75.5627" atv="-16.1708"/><point ath="-75.4548" atv="-16.2975"/><point ath="-75.2404" atv="-16.3208"/><point ath="-75.1052" atv="-16.4979"/><point ath="-74.9179" atv="-16.4701"/><point ath="-74.7569" atv="-16.5191"/><point ath="-74.6226" atv="-16.5682"/><point ath="-74.2196" atv="-16.7151"/><point ath="-73.4926" atv="-17.1090"/><point ath="-72.7119" atv="-17.4723"/><point ath="-72.0148" atv="-17.6313"/><point ath="-71.6926" atv="-17.7484"/><point ath="-71.2663" atv="-17.7352"/><point ath="-70.9441" atv="-17.8759"/><point ath="-70.6479" atv="-18.0420"/><point ath="-70.6984" atv="-18.1697"/><point ath="-70.9818" atv="-18.2881"/><point ath="-70.8148" atv="-18.4828"/><point ath="-70.8503" atv="-18.9159"/><point ath="-71.1283" atv="-19.2851"/><point ath="-71.8710" atv="-19.4234"/><point ath="-73.0268" atv="-19.3732"/><point ath="-74.7822" atv="-19.3350"/><point ath="-76.5965" atv="-19.5620"/><point ath="-79.7049" atv="-20.3182"/><point ath="-83.2046" atv="-21.2368"/><point ath="-86.0045" atv="-22.3221"/><point ath="-87.7338" atv="-23.1322"/><point ath="-87.9850" atv="-23.1603"/><point ath="-88.4902" atv="-22.7562"/><point ath="-90.5800" atv="-22.0999"/><point ath="-92.2675" atv="-22.3837"/><point ath="-94.4964" atv="-23.5699"/><point ath="-95.7532" atv="-24.2639"/><point ath="-96.8276" atv="-24.9831"/><point ath="-97.3622" atv="-25.1689"/><point ath="-97.6975" atv="-24.9875"/><point ath="-97.7651" atv="-24.7136"/><point ath="-97.8632" atv="-24.2001"/><point ath="-97.7973" atv="-23.2129"/><point ath="-97.5377" atv="-21.9176"/><point ath="-97.5500" atv="-20.9864"/><point ath="-97.5713" atv="-20.3981"/><point ath="-97.8864" atv="-19.7996"/><point ath="-98.7893" atv="-18.2090"/><point ath="-99.3397" atv="-17.3217"/><point ath="-99.9303" atv="-16.7100"/><point ath="-100.7313" atv="-16.1241"/><point ath="-101.6126" atv="-15.9140"/><point ath="-101.9313" atv="-15.8998"/><point ath="-102.0082" atv="-15.2744"/><point ath="-101.9617" atv="-15.0346"/><point ath="-100.5346" atv="-14.7796"/><point ath="-99.1094" atv="-14.7572"/><point ath="-98.1442" atv="-14.7841"/><point ath="-98.1053" atv="-8.0134"/><point ath="-98.5986" atv="-8.1472"/><point ath="-98.9812" atv="-7.9334"/><point ath="-99.1500" atv="-7.5134"/><point ath="-99.1447" atv="-7.1653"/><point ath="-99.8431" atv="-7.1913"/><point ath="-100.4355" atv="-7.2176"/><point ath="-100.7448" atv="-7.0395"/><point ath="-100.9488" atv="-6.8283"/><point ath="-101.0839" atv="-6.6530"/><point ath="-101.0768" atv="-6.3066"/><point ath="-101.2418" atv="-5.9236"/><point ath="-101.3388" atv="-5.6110"/><point ath="-101.6069" atv="-5.2621"/><point ath="-101.7360" atv="-4.8811"/><point ath="-101.7322" atv="-4.7088"/><point ath="-102.4155" atv="-4.6305"/><point ath="-102.7330" atv="-5.3606"/><point ath="-102.5948" atv="-5.6752"/><point ath="-102.8745" atv="-5.7426"/><point ath="-103.2578" atv="-5.6350"/><point ath="-103.5372" atv="-5.7369"/><point ath="-103.9204" atv="-5.7680"/><point ath="-104.3370" atv="-5.6595"/><point ath="-104.5433" atv="-5.3447"/><point ath="-104.2280" atv="-4.8958"/><point ath="-104.2263" atv="-4.6175"/><point ath="-104.2232" atv="-4.1305"/><point ath="-104.2213" atv="-3.8173"/><point ath="-104.4638" atv="-3.7808"/><point ath="-104.5671" atv="-3.6757"/><point ath="-104.6320" atv="-3.0145"/><point ath="-104.4931" atv="-2.9457"/><point ath="-104.4225" atv="-2.7374"/><point ath="-104.4216" atv="-2.5982"/><point ath="-104.0401" atv="-2.5304"/><point ath="-104.0355" atv="-1.7649"/><point ath="-103.9656" atv="-1.6608"/><point ath="-103.9988" atv="-1.4172"/><point ath="-104.0319" atv="-1.1738"/><point ath="-103.9955" atv="-0.8610"/><point ath="-103.5454" atv="-0.8964"/><point ath="-102.2993" atv="-1.5605"/><point ath="-101.4528" atv="-1.7934"/><point ath="-101.2991" atv="-1.9480"/><point ath="-101.2612" atv="-2.1797"/><point ath="-100.7985" atv="-2.3350"/><point ath="-99.4457" atv="-2.4527"/><point ath="-78.0524" atv="-2.4201"/><point ath="-78.0286" atv="-2.8166"/><point ath="-78.0281" atv="-3.1663"/><point ath="-78.0271" atv="-3.8419"/><point ath="-78.0268" atv="-4.0980"/><point ath="-77.6082" atv="-4.1880"/><point ath="-77.2137" atv="-4.1385"/><point ath="-77.1236" atv="-2.5558"/><point ath="-77.1469" atv="-2.4627"/><point ath="-76.2678" atv="-2.4117"/><point ath="-76.0366" atv="-2.6196"/><point ath="-75.6212" atv="-2.8723"/><point ath="-75.2759" atv="-2.9626"/><point ath="-74.8396" atv="-3.0055"/><point ath="-74.3357" atv="-3.0245"/><point ath="-73.9249" atv="-2.8592"/><point ath="-73.5607" atv="-2.6484"/><point ath="-73.3336" atv="-2.5081"/><point ath="-73.1522" atv="-2.3914"/><point ath="-72.4642" atv="-2.4129"/><point ath="-72.4613" atv="-3.9932"/><point ath="-72.0915" atv="-4.0363"/><point ath="-71.8377" atv="-4.0339"/><point ath="-71.6994" atv="-4.0094"/><point ath="-71.6566" atv="-2.4085"/>
+
+		</hotspot>
+		<hotspot name="daxiongbaodiandong2_poly" style="poly_hs"> 
+            <point ath="-76.8082" atv="-5.2495"/><point ath="-76.8243" atv="-8.4494"/><point ath="-75.8617" atv="-8.7257"/><point ath="-75.6551" atv="-8.8226"/><point ath="-75.4039" atv="-9.1044"/><point ath="-74.6697" atv="-9.8571"/><point ath="-73.1519" atv="-11.7307"/><point ath="-72.3971" atv="-12.8845"/><point ath="-71.0085" atv="-15.0655"/><point ath="-69.9296" atv="-16.8105"/><point ath="-69.9119" atv="-17.3356"/><point ath="-69.8182" atv="-17.5654"/><point ath="-69.6984" atv="-17.6363"/><point ath="-69.4084" atv="-17.5970"/><point ath="-69.1168" atv="-17.4205"/><point ath="-68.9945" atv="-17.2631"/><point ath="-68.8241" atv="-17.1063"/><point ath="-68.7983" atv="-16.9240"/><point ath="-68.7966" atv="-16.7410"/><point ath="-55.8605" atv="-13.8030"/><point ath="-55.5997" atv="-13.1757"/><point ath="-55.2918" atv="-12.5930"/><point ath="-54.8650" atv="-12.1244"/><point ath="-54.3444" atv="-11.6305"/><point ath="-53.8969" atv="-11.1131"/><point ath="-53.4494" atv="-10.7581"/><point ath="-52.9780" atv="-10.5420"/><point ath="-52.6258" atv="-10.3272"/><point ath="-52.2734" atv="-10.1820"/><point ath="-51.7110" atv="-9.9399"/><point ath="-51.1496" atv="-9.7437"/><point ath="-50.6394" atv="-9.3853"/><point ath="-50.5035" atv="-9.1037"/><point ath="-50.3407" atv="-7.2945"/><point ath="-50.5580" atv="-4.9301"/><point ath="-50.5388" atv="-3.6257"/><point ath="-50.5636" atv="-3.1362"/><point ath="-50.8216" atv="-2.4607"/><point ath="-51.2203" atv="-1.4346"/><point ath="-51.6885" atv="-0.5010"/><point ath="-52.4839" atv="0.6899"/><point ath="-53.1157" atv="1.6703"/><point ath="-53.5604" atv="2.4862"/><point ath="-53.7476" atv="2.8123"/><point ath="-53.8179" atv="2.9984"/><point ath="-54.2311" atv="4.3056"/><point ath="-59.3634" atv="4.9839"/><point ath="-61.0362" atv="5.0835"/><point ath="-69.2018" atv="4.0334"/><point ath="-69.1731" atv="-1.3938"/><point ath="-68.5928" atv="-1.4413"/><point ath="-68.5919" atv="-1.6267"/><point ath="-67.9880" atv="-1.6047"/><point ath="-67.9640" atv="-1.7902"/><point ath="-67.4057" atv="-1.8144"/><point ath="-67.4046" atv="-2.1621"/><point ath="-68.2177" atv="-2.2528"/><point ath="-68.1930" atv="-2.5996"/><point ath="-68.2622" atv="-2.6918"/><point ath="-68.2840" atv="-3.0149"/><point ath="-68.2134" atv="-3.2687"/><point ath="-68.2123" atv="-3.5221"/><point ath="-68.3738" atv="-3.7054"/><point ath="-68.2094" atv="-4.1886"/><point ath="-68.1141" atv="-4.8307"/><point ath="-67.9972" atv="-5.1057"/><point ath="-68.0659" atv="-5.2880"/><point ath="-68.2503" atv="-5.4465"/><point ath="-68.3194" atv="-5.5144"/><point ath="-68.3883" atv="-5.6279"/><point ath="-68.9199" atv="-5.6012"/><point ath="-68.9663" atv="-5.5553"/><point ath="-68.9681" atv="-5.2135"/><point ath="-68.9453" atv="-5.1453"/><point ath="-69.0149" atv="-5.0991"/><point ath="-69.0157" atv="-4.9393"/><point ath="-69.0625" atv="-4.8248"/><point ath="-70.9962" atv="-4.9225"/><point ath="-70.9952" atv="-5.0591"/><point ath="-70.9707" atv="-5.2639"/><point ath="-71.0389" atv="-5.3540"/><point ath="-71.2677" atv="-5.3969"/><point ath="-71.4967" atv="-5.3942"/><point ath="-71.5176" atv="-5.6433"/><point ath="-71.5163" atv="-5.8018"/><point ath="-71.6074" atv="-5.8458"/><point ath="-71.8814" atv="-5.8648"/><point ath="-72.0184" atv="-5.8630"/><point ath="-72.1332" atv="-5.7710"/><point ath="-72.1794" atv="-5.7026"/><point ath="-72.2056" atv="-5.3176"/><point ath="-72.2290" atv="-5.2493"/><point ath="-72.2986" atv="-5.1125"/><point ath="-72.2766" atv="-5.0220"/><point ath="-73.4807" atv="-5.1193"/><point ath="-73.5027" atv="-5.1868"/><point ath="-73.9330" atv="-5.1578"/><point ath="-73.9789" atv="-5.0895"/><point ath="-74.7590" atv="-5.2129"/><point ath="-74.9910" atv="-5.3495"/><point ath="-75.1069" atv="-5.4869"/><point ath="-75.0600" atv="-5.9711"/><point ath="-75.1294" atv="-6.0625"/><point ath="-75.6392" atv="-6.0571"/><point ath="-75.7087" atv="-6.0564"/><point ath="-75.7323" atv="-5.6191"/><point ath="-75.8019" atv="-5.4802"/><point ath="-76.2413" atv="-5.3835"/><point ath="-76.3569" atv="-5.3363"/><point ath="-76.3570" atv="-5.2442"/>
+
+		</hotspot>
+		
+		<hotspot name="daxiongbaodiandong3_poly" style="poly_hs">
+		<point ath="-177.9846" atv="-2.1814"/><point ath="-178.0422" atv="1.4578"/><point ath="-137.7585" atv="4.6241"/><point ath="-135.2336" atv="4.0129"/><point ath="-134.7804" atv="4.0785"/><point ath="-133.4589" atv="4.0425"/><point ath="-132.4475" atv="4.0135"/><point ath="-131.8846" atv="3.9212"/><point ath="-132.1655" atv="3.3246"/><point ath="-132.0738" atv="2.8711"/><point ath="-131.3772" atv="2.7814"/><point ath="-131.4893" atv="-0.5940"/><point ath="-130.5501" atv="-0.4994"/><point ath="-130.4910" atv="-1.2517"/><point ath="-128.3311" atv="-0.9977"/><point ath="-127.9248" atv="-0.8408"/><point ath="-127.7682" atv="-0.7157"/><point ath="-127.3064" atv="-1.2136"/><point ath="-126.8123" atv="-1.3989"/><point ath="-126.1632" atv="-1.3966"/><point ath="-125.9812" atv="-1.6750"/><point ath="-125.9864" atv="-2.1705"/><point ath="-129.1530" atv="-2.5276"/><point ath="-129.2487" atv="-2.8389"/><point ath="-139.6578" atv="-4.4500"/>
+		 </hotspot>
+
+	</scene>
+
+	<scene name="scene_IMG_0372_Panorama_ok" title="大雄宝殿北" onstart="" thumburl="panos/IMG_0372_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-144.360" vlookat="-3.313" fovtype="MFOV" fov="87.060" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0372_Panorama_ok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0372_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0372_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0372_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-28.091" atv="5.967" linkedscene="scene_img_0365_panoramaok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-145.112" atv="5.532" linkedscene="scene_img_0381_panorama_ok" />
+
+	</scene>
+
+	<scene name="scene_IMG_0381_Panorama_ok" title="三圣殿" onstart="" thumburl="panos/IMG_0381_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-180.177" vlookat="-4.984" fovtype="MFOV" fov="97.558" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0381_Panorama_ok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0381_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0381_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0381_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-1.561" atv="30.184" linkedscene="scene_img_0372_panorama_ok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-103.575" atv="3.004" linkedscene="scene_img_0388_panorama_ok" />
+		<hotspot name="sanshengdian1" imgtitle="三圣殿"  style="intro_hotspot"  ath="-154.92" atv="4.7"  /> 
+
+	</scene>
+
+	<scene name="scene_IMG_0388_Panorama_ok" title="菩提院" onstart="" thumburl="panos/IMG_0388_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="21.980" vlookat="-2.862" fovtype="MFOV" fov="87.054" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0388_Panorama_ok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0388_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0388_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0388_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-9.740" atv="-1.409" linkedscene="scene_img_0381_panorama_ok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="12.802" atv="-2.631" linkedscene="scene_img_0396_panorama_ok" />
+		<hotspot name="spot3" style="skin_hotspotstyle" ath="154.703" atv="3.639" linkedscene="scene_img_0412_panorama_ok" />
+		<hotspot name="putiyuan1" imgtitle="般若堂"  style="intro_hotspot"  ath="-169.76" atv="4.25"  />
+		
+		<hotspot name="putiyuan1_poly" style="poly_hs"> 
+            <point ath="179.54" atv="-20.18" />
+			<point ath="-147.80" atv="-9.91" />
+			<point ath="-138.83" atv="-4.22" />
+			<point ath="-139.01" atv="2.77" />
+			<point ath="-158.13" atv="8.21" />
+			<point ath="-168.39" atv="7.47" />
+			<point ath="-168.39" atv="1.16" />
+			<point ath="176.72" atv="1.74" />
+			<point ath="176.72" atv="1.42" />
+			<point ath="172.84" atv="1.28" />
+			<point ath="172.81" atv="-4.75" />
+			<point ath="174.00" atv="-5.14" />
+			<point ath="174.13" atv="-6.21" />
+			<point ath="174.36" atv="-6.75" />
+			<point ath="173.15" atv="-6.94" />
+			<point ath="171.07" atv="-7.88" />
+			<point ath="172.98" atv="-8.55" />
+		</hotspot>
+		
+
+	</scene>
+
+	<scene name="scene_IMG_0396_Panorama_OK" title="藏经楼" onstart="" thumburl="panos/IMG_0396_Panorama_OK.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-179.716" vlookat="-3.652" fovtype="MFOV" fov="97.371" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0396_Panorama_OK.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0396_Panorama_OK.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0396_Panorama_OK.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0396_Panorama_OK.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="153.499" atv="1.744" linkedscene="scene_img_0404_panorama_ok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="21.630" atv="12.428" linkedscene="scene_img_0388_panorama_ok" />
+		<hotspot name="cangjinglou1" imgtitle="藏经楼"  style="intro_hotspot"  ath="-158.87" atv="1.39"  /> 
+
+	</scene>
+
+	<scene name="scene_IMG_0404_Panorama_ok" title="卧佛殿" onstart="" thumburl="panos/IMG_0404_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-204.615" vlookat="-12.955" fovtype="MFOV" fov="97.342" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0404_Panorama_ok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0404_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0404_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0404_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-29.362" atv="5.635" linkedscene="scene_img_0396_panorama_ok" />
+		<hotspot name="wofodian1" imgtitle="卧佛殿"  style="intro_hotspot"  ath="-90.41" atv="1.91"  />
+		<hotspot name="wofodian2" imgtitle="觉贤大师纪念堂"  style="intro_hotspot"  ath="171" atv="2.89"  />
+
+	</scene>
+
+	<scene name="scene_IMG_0412_Panorama_ok" title="法物流通处" onstart="" thumburl="panos/IMG_0412_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="15.718" vlookat="-0.576" fovtype="MFOV" fov="77.648" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0412_Panorama_ok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0412_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0412_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0412_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="53.960" atv="2.150" linkedscene="scene_img_0420_panorama_ok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-168.464" atv="1.881" linkedscene="scene_img_0388_panorama_ok" />
+		
+
+	</scene>
+
+	<scene name="scene_IMG_0420_Panorama_ok" title="东门广场" onstart="" thumburl="panos/IMG_0420_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="156.756" vlookat="-1.666" fovtype="MFOV" fov="85.024" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0420_Panorama_ok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0420_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0420_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0420_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-14.663" atv="-0.052" linkedscene="scene_img_0412_panorama_ok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="154.920" atv="-12.388" linkedscene="scene_img_0438_panoramaok" />
+		<hotspot name="spot3" style="skin_hotspotstyle" ath="-174.851" atv="-3.791" linkedscene="scene_img_0477_panoramaok" />
+		<hotspot name="spot4" style="skin_hotspotstyle" ath="92.945" atv="2.844" linkedscene="scene_img_0431_panorama_ok" />
+		<hotspot name="spot5" style="skin_hotspotstyle" ath="-81.428" atv="-0.622" linkedscene="scene_img_0365_panoramaok" />
+
+	</scene>
+
+	<scene name="scene_IMG_0431_Panorama_ok" title="东门" onstart="" thumburl="panos/IMG_0431_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="178.713" vlookat="-0.247" fovtype="MFOV" fov="96.206" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0431_Panorama_ok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0431_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0431_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0431_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="179.711" atv="-0.446" linkedscene="scene_img_0420_panorama_ok" />
+
+	</scene>
+
+	<scene name="scene_IMG_0438_Panoramaok" title="亭1(现毗卢阁)" onstart="" thumburl="panos/IMG_0438_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0438_Panoramaok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0438_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0438_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0438_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-128.677" atv="13.709" linkedscene="scene_IMG_0420_Panorama_ok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="48.683" atv="7.412" linkedscene="scene_img_0447_panoramaok" />
+		<hotspot name="spot3" style="skin_hotspotstyle" ath="0.742" atv="5.824" linkedscene="scene_img_0454_panoramaok" />
+
+	</scene>
+
+	<scene name="scene_IMG_0447_Panoramaok" title="亭2(现毗卢阁)" onstart="" thumburl="panos/IMG_0447_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="168.849" vlookat="1.300" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0447_Panoramaok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0447_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0447_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0447_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-27.585" atv="6.367" linkedscene="scene_img_0438_panoramaok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="43.015" atv="4.647" linkedscene="scene_img_0454_panoramaok" />
+		<hotspot name="spot3" style="skin_hotspotstyle" ath="-179.026" atv="25.219" linkedscene="scene_img_0477_panoramaok" />
+
+	</scene>
+
+	<scene name="scene_IMG_0454_Panoramaok" title="亭3(现毗卢阁)" onstart="" thumburl="panos/IMG_0454_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="227.477" vlookat="-6.014" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0454_Panoramaok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0454_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0454_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0454_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="78.348" atv="4.236" linkedscene="scene_img_0438_panoramaok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-6.042" atv="5.314" linkedscene="scene_img_0447_panoramaok" />
+
+	</scene>
+
+	<scene name="scene_IMG_0477_Panoramaok" title="药师佛塔" onstart="" thumburl="panos/IMG_0477_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-183.708" vlookat="-30.594" fovtype="MFOV" fov="96.191" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/IMG_0477_Panoramaok.tiles/preview.jpg" />
+
+		<image type="CUBE" multires="true" tilesize="512">
+			<level tiledimagewidth="2816" tiledimageheight="2816">
+				<cube url="panos/IMG_0477_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="1536" tiledimageheight="1536">
+				<cube url="panos/IMG_0477_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+			</level>
+			<level tiledimagewidth="768" tiledimageheight="768">
+				<cube url="panos/IMG_0477_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+			</level>
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="137.786" atv="-3.674" linkedscene="scene_img_0420_panorama_ok" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-147.367" atv="1.103" linkedscene="scene_img_0447_panoramaok" />
+		<hotspot name="yaoshita1" imgtitle="药师塔"  style="intro_hotspot"  ath="152.90" atv="-3.52"  /> 
+
+	</scene>
+
+
+</krpano>

@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>krpano - 1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta http-equiv="x-ua-compatible" content="IE=edge" />
+	<style>
+		@-ms-viewport { width:device-width; }
+		@media only screen and (min-device-width:800px) { html { overflow:hidden; } }
+		html { height:100%; }
+		body { height:100%; overflow:hidden; margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFFFFF; background-color:#000000; }
+	</style>
+	<link type="text/css" rel="stylesheet" href="css/style.css">
+	<link href="css/lightbox.css" rel="stylesheet">
+</head>
+<body>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/pano.js"></script>
+<div id="pano" style="width:100%;height:100%;">
+	<noscript><table style="width:100%;height:100%;"><tr style="vertical-align:middle;"><td><div style="text-align:center;">ERROR:<br/><br/>Javascript not activated<br/><br/></div></td></tr></table></noscript>
+	<script>
+		
+		 embedpano({swf:"tour.swf", xml:"tour.xml", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:true,consolelog : true,					// trace krpano messages also to the browser console
+		  onready : krpano_onready_callback});
+		 
+		  function krpano_onready_callback(krpano_interface)
+		 	{
+                 krpano = krpano_interface;
+                
+             }
+	</script>
+</div>
+
+
+	
+<div id="link-area"></div>
+	
+<div id="pano_skin">
+	<div id="thumb_container">
+		<div class="thumb_border top_border">
+
+		</div>
+		<div class="thumbs" style="opacity: 0;">
+			<div class="slidee" style="width:0px;">
+					<!-- <div class="thumb_wrapper" style="padding:4px;height:72px;width: 100px;float: left;">
+							<div class="thumbs_01" style="position:relative;border: 3px solid #FFFFFF;height:100%;width:100%;background-size: cover;background-position: center,center;background-image:url(panos/IMG_0322_Panorama_ok.tiles/thumb.jpg)">
+								<div class="thumbs_01_text" style="pointer-events: none;width: 100%;position: absolute;bottom:0;text-align: center;background: rgba(0, 0, 0, 0.7);font-size: 12px;">山门</div>
+							</div>		
+					</div> -->
+			</div>
+		</div>
+
+		<div class="thumb_border bottom_border">
+
+	    </div>
+
+	</div>
+
+	<div id="flower_contianer">
+
+	</div>
+
+	<div id="flower">
+		
+	</div>
+
+	
+	<div id="namotext">
+		
+	</div>
+
+	<div id="uprighticons">
+
+		 <div class="uprighticon fullscreen">
+
+		</div> 
+		
+		 <div class="uprighticon vrenter">
+			
+		</div> 
+
+		<div class="uprighticon gyro">
+			
+		</div> 
+
+		<div class="uprighticon music">
+			
+		</div> 
+		
+
+	</div>
+	
+	<div class="mouse">
+		
+	</div> 
+	<div id="bottomicons">
+
+		<div class="bottomicon thumbs_toggle">
+
+	   </div>
+	   
+	   
+	   
+
+
+   </div>
+</div>
+
+
+
+
+
+
+<script src="js/Pizzicato.min.js"></script>
+<script src="js/sly.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/lightbox.js"></script>
+<script src="js/script.js"></script>
+
+</body>
+</html>
