@@ -369,9 +369,16 @@
 				</layer>
 			</layer>
 
-		<layer name="skin_loadingtext" type="text" align="center" x="5" y="-5" html="get:skin_settings.loadingtext" visible="false" bg="false" enabled="false" css="calc:skin_settings.design_text_css + ' text-align:center; font-style:italic; font-size:22px;'" textshadow="get:skin_settings.design_text_shadow" />
+		
 		<layer name="skin_buttonglow"  style="skin_base" crop="64|384|64|64" align="center" x="0" y="1" scale="1.0" alpha="0.0" visible="false" enabled="false" />
 		<layer name="skin_thumbborder" type="container" x="get:skin_settings.design_thumbborder_padding" y="get:skin_settings.design_thumbborder_padding" width="calc:skin_settings.thumbs_width - 2*skin_settings.design_thumbborder_padding" height="calc:skin_settings.thumbs_height - 2*skin_settings.design_thumbborder_padding" visible="false" enabled="false" align="lefttop" bgborder="get:skin_settings.design_thumbborder_bgborder" bgroundedge="get:skin_settings.design_thumbborder_bgroundedge" />
+	</layer>
+
+	
+	<layer name="skin_layer_new" keep="true" type="container" align="top" width="get:skin_settings.layout_width" maxwidth="get:skin_settings.layout_maxwidth" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="1">
+	    <!-- 这里动了 把读取文字择出来了 -->
+		<layer name="skin_loadingtext" type="text" align="center" x="5" y="-5" html="get:skin_settings.loadingtext" visible="true" bg="false" enabled="false" css="calc:skin_settings.design_text_css + ' text-align:center; font-style:italic; font-size:22px;'" textshadow="get:skin_settings.design_text_shadow" />
+	
 	</layer>
 
 	<!-- previous/next scene buttons for the hidden skin mode -->
@@ -382,7 +389,7 @@
 		<layer name="skin_btn_next_fs_icon" style="skin_base" crop="64|64|64|64" align="center" scale="0.5" enabled="false" />
 	</layer>
 
-
+   
 	<!-- gyro plugin 这里动了-->
 	<plugin name="skin_gyro" keep="true" url="" html5_url="%SWFPATH%/plugins/gyro2.js" softstart="1.0" enabled="false" onavailable="skin_arrange_buttons();jscall(var event = new Event('gyro');
 	    krpano.dispatchEvent(event); );" devices="html5" />
@@ -451,7 +458,7 @@
 		skin_onresize();
 		skin_updatescroll();
 
-		<!-- set(layer[skin_layer].visible, true); 这里动了 -->
+		 <!-- set(layer[skin_layer].visible, true);  -->
 	</action>
 
 

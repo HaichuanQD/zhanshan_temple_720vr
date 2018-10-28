@@ -1,11 +1,11 @@
 ﻿<krpano version="1.19" title="Virtual Tour">
 
 	<include url="skin/vtourskin.xml" />
-	<plugin name="soundinterface"
+	<!-- <plugin name="soundinterface"
         url.flash="plugins/soundinterface.swf"
         url.html5="plugins/soundinterface.js"
         preload="true"
-		keep="true" />
+		keep="true" /> 取消声音插件 -->
 
 	<!-- customize skin settings: maps, gyro, webvr, thumbnails, tooltips, layout, design, ... -->
 	<skin_settings maps="false"
@@ -17,7 +17,7 @@
 	               webvr="true"
 	               webvr_gyro_keeplookingdirection="false"
 	               webvr_prev_next_hotspots="true"
-	               littleplanetintro="false"
+	               littleplanetintro="true"
 	               title="false"
 	               thumbs="false"
 	               thumbs_width="120" thumbs_height="80" thumbs_padding="10" thumbs_crop="0|40|240|160"
@@ -79,7 +79,7 @@
 		jscall(
 		
 		var event = new Event('setskin');
-	    krpano.dispatchEvent(event);
+	    document.dispatchEvent(event);
 	    );
 	</action>
 	<action name="do_crop_animation" scope="local" args="framewidth, frameheight, framerate">
@@ -210,7 +210,7 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 	
 	<scene name="scene_IMG_0322_Panorama_ok" title="山门" onstart="" thumburl="panos/IMG_0322_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
 
-		<view hlookat="-183.439" vlookat="-8.377" fovtype="MFOV" fov="108.762" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+		<view hlookat="176.5610" vlookat="1.1114" fovtype="MFOV" fov="108.762" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
 		<preview url="panos/IMG_0322_Panorama_ok.tiles/preview.jpg" />
 
@@ -227,7 +227,7 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 		</image>
 
 		
-		<hotspot name="spot1" style="skin_hotspotstyle" ath="176.411" atv="11.868" linkedscene="scene_img_0329_panoramaok" />
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="176.411" atv="7.437" linkedscene="scene_img_0329_panoramaok" />
 		<hotspot name="shanmen1" imgtitle="山门"  style="intro_hotspot"  ath="-162.39" atv="1.0898"  />
 
         <!-- <hotspot name="lion">

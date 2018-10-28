@@ -1,9 +1,48 @@
 
 $( document ).ready(function() {
 
+
+var title = new Image();
+var doordeco = new Image();
+var touch_tip = new Image();
+
+
+doordeco.onload = function(){
+    
+    $("#size_control").css({
+        "width":`${setsize(572,929,$(window).width() *0.8,$(window).height()*0.8)[0]}px`,
+        "height":`${setsize(572,929,$(window).width() *0.8,$(window).height()*0.8)[1]}px`});
+        
+    $("#start_title").fadeIn();
+    // $("#start_title").addClass("fadeIn slow");
+    $("#start_deco").fadeIn();
+    // $("#start_deco").addClass("zoomIn");
+
+
+};
+
+
+title.src = "img/start_title.png";
+doordeco.src = "img/door_deco.png";
+touch_tip.src = "img/touch_tip.png";
+
+$("#start_up").click(function(){
+	$(this).animate({opacity:0},{duration:1000,complete:function(){
+		$(this).css("display","none");
+		
+	}});
+	setTimeout(function(){embedpano({swf:"tour.swf", xml:"tour.xml", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:true,consolelog : true,					// trace krpano messages also to the browser console
+		  onready : krpano_onready_callback,bgcolor:"#ececec"});},1000)
+	
+		 
+		  
+});
+
+
 //thumbprocess模块是全景缩略图模块，实现了自动读取全景场景的缩略图，自动排列，自动列标题，宽度可调，可拖动
 //模块中DOM变量指向sly的一些HTML元素，横向的SLY非LIST模式，slidee的宽度必须人工指定
 //
+
 var thumbprocess = (function(){
 
     var DOM = {
@@ -199,7 +238,7 @@ var controlicons =(function(){
         };
         
     };
-    var autoplay = 0;//开头自动播放音乐设置在这里
+    var autoplay = 1;//开头自动播放音乐设置在这里
     var playing = false;
 
     var loadmusic = function(){
@@ -390,16 +429,187 @@ thumbprocess.thumbsonresize();
     
 });
 
-krpano.addEventListener("setskin",function(){
 
+//简介模块
+
+var infoslide = new Sly($(".show_area"),{
+
+        
+    touchDragging: true,
+    scrollBy:200,
+    swingSpeed:0.1,
+    speed:500,
+    releaseSwing:true,
+    elasticBounds: 1,
+    scrollTrap: true,
+    easing: "easeOutExpo",
+    scrollBar:$(".scroll_bar_v"),
+    dynamicHandle: true
+    
+});
+var sta;
+
+var intro_html = {
+    temple:`<div style="width:100%;font-size:0px"><img src="img/088_01.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="img/088_02.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="img/088_03.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="img/088_04.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="img/088_05.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="img/088_06.png" style="width:100%;height:auto;"/></div>`,
+    monk:`<div style="width:100%;font-size:0px"><img src="img/099_01.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="img/099_02.png" style="width:100%;height:auto;"/></div>`,
+    wechat:`<div style="width:100%;font-size:0px"><img src="img/0010.png" style="width:100%;height:auto;"/></div>`
+}
+
+function end (){
+    $(".intro_overlay").fadeOut();
+    $(".img_caption_wrapper").fadeOut();
+    if(sta){
+        clearInterval(sta);
+    }
+}
+
+function info_init (){
+    
+    
+    $(".intro_overlay").fadeIn();
+    $(".img_caption_wrapper").fadeIn();
+    $(".intro_overlay").click(function(){
+        end();
+        
+    });
+    $(".img_caption_wrapper").click(
+        function(e){
+            if( $(e.target).attr("id") === "intro_content" || $(e.target).attr("id") === "cp_wrapper" ){
+                end();
+            }
+        }
+    );
+    $(".close_button").click(function(){
+        end();
+    });
+    $(".intro_label").click(function(e){
+        var id = $(e.target).attr("id");
+        if($(e.target).attr("activelabel")){}
+        else {
+            $(".active_label").removeAttr("activelabel");
+            $(".active_label").removeClass("active_label");
+            $(this).addClass("active_label");
+            $(".active_label").attr("activelabel",1);
+             $(".info_slidee").animate({ opacity:0 },{complete:function(){
+                 $(".info_slidee").html(intro_html[id]);
+                 infoslide.slideTo(0);
+                 
+             }});
+             $(".info_slidee").animate({opacity:1.0});
+
+            
+        }
+    });
+    var backgroundIMG = new Image();
+    backgroundIMG.onload = function(){
+        setintro_size();
+    };
+    backgroundIMG.src = "img/background.jpg";
+    
+    
+    
+    
+}
+
+function setsize(tw,th,mw,mh){
+    var bg_width = 1024;
+    var bg_height = 1300;
+    var maxwidth =  $(window).width() - 16;
+    var maxheight =  $(window).height() - 120;
+    var output_width,output_height;
+
+    if( tw && th && mw && mh){
+        bg_width = tw;
+        bg_height = th;
+        maxwidth = mw;
+        maxheight = mh;
+    };
+
+    var bg_ratio = bg_width/bg_height;
+    
+    if( bg_width > maxwidth && bg_height > maxheight ){
+    if( maxwidth/maxheight > bg_ratio  ){
+        output_height = maxheight;
+        output_width = output_height*bg_ratio;
+        output_width = output_width.toFixed(0);
+        
+    }else{
+        output_width = maxwidth;
+        output_height = output_width/bg_ratio;
+        output_height = output_height.toFixed(0);
+
+        
+    }
+    }else if (bg_width<=maxwidth){
+        if(bg_height<=maxheight){
+            output_width = bg_width;
+            output_height=bg_height;
+
+
+        } else if(bg_height>maxheight){
+            output_height=maxheight;
+            output_width = output_height*bg_ratio;
+            output_width = output_width.toFixed(0);
+
+        }
+
+    }else if (bg_height<=maxheight){
+        if(bg_width>maxwidth){
+            output_width = maxwidth;
+            output_height = output_width/bg_ratio;
+            output_height = output_height.toFixed(0);
+
+        }
+    };
+
+
+    return [output_width,output_height]
+    
+    
+
+    
+
+    
+}
+
+function setintro_size(){
+    $(".bg_container").css("background-image",`url(img/background.jpg)`);
+    infoslide.init();
+    infoslide.on("move",function(){ infoslide.reload(); }); 
+    $(".caption_intro").css("width",setsize()[0]);
+    $(".bg_container").animate({
+        width:setsize()[0],
+        height:setsize()[1]
+    },{complete: function(){ 
+        $(".area_slidebar_wrapper").animate({opacity:1.0},{duration:1000});
+        $(".caption_intro").animate({opacity:1.0},{duration:1000});
+        sta = setInterval(function(){infoslide.reload();},300);
+    }});
+}
+
+document.addEventListener("setskin",function(){
+    $("#pano_skin").css("display","block");
+    $("#pano_skin").animate({opacity:1.0},{duration:1500});
+    $(".info_slidee").html(intro_html.temple);
     thumbprocess.thumbsinit();
     controlicons.init();
-    track_mouse();//屏幕中心点的ath，ahv显示模块
+    //track_mouse();//屏幕中心点的ath，ahv显示模块
     poly_spot.init();
+    
 
 });
 
-
+$("#namotext").click(
+    function(){
+        info_init();
+    }
+)
 
     // 下面的函数是全屏切换函数
 function toggleFullScreen(elem) {
