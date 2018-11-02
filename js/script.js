@@ -211,7 +211,7 @@ var controlicons =(function(){
         var bgm = new Pizzicato.Sound({
             source:'file',
             options:{
-                path:'music/merged_sutra.mp3',
+                path:'https://cdn.huixinhuiyi.com/zhanshan/music/merged_sutra.mp3',
                 loop:true
             }
         }, function(error){
