@@ -42,7 +42,7 @@
 	               controlbar_offset_closed="-40"
 	               controlbar_overlap.no-fractionalscaling="10"
 	               controlbar_overlap.fractionalscaling="0"
-	               design_skin_images="vtourskin.png"
+	               design_skin_images="http://image.nanbeiji360.com/zhanshan/skin/vtourskin.png"
 	               design_bgcolor="0x2D3E50"
 	               design_bgalpha="0.8"
 	               design_bgborder="0"
@@ -259,7 +259,7 @@
 	<style name="skin_thumbtext_style" type="text" align="bottom" width="100%" y="5" enabled="false" bg="false" bgborder="false" css="calc:skin_settings.design_text_css + ' text-align:center; font-size:10px;'" textshadow="get:skin_settings.design_text_shadow" />
 
 	<!-- skin_hotspotstyle - style for the hotspots -->
-	<style name="skin_hotspotstyle" url="vtourskin_hotspot.png" scale="0.5" edge="top" distorted="true"
+	<style name="skin_hotspotstyle" url="http://image.nanbeiji360.com/zhanshan/skin/vtourskin_hotspot.png" scale="0.5" edge="top" distorted="true"
 	       tooltip=""
 	       linkedscene=""
 	       linkedscene_lookat=""

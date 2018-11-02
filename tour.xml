@@ -70,11 +70,18 @@
 	<!-- <include url="skin/vtourskin_design_117round.xml"    /> -->
 	<!-- <include url="skin/vtourskin_design_black.xml"       /> -->
 
-
+    <action name="krpanoset" autorun="onstart">
+		jscall(
+			
+			var event = new Event('krpanoready');
+			document.dispatchEvent(event);
+			);
+	</action>
 	<!-- startup action - load the first scene -->
-	<action name="startup" autorun="onstart">
+	<action name="startup">
 		if(startscene === null OR !scene[get(startscene)], copy(startscene,scene[0].name); );
 		loadscene(get(startscene), null, MERGE);
+		skin_setup_littleplanetintro();
 		if(startactions !== null, startactions() );
 		jscall(
 		
@@ -127,13 +134,13 @@
 
 <![CDATA[ 
 
-var html = `<a  href="img/${args[1]}.jpg" data-lightbox="${args[1]}" data-title="${args[2]}" ><div style="width:100%;height:100%;"></div></a><div style="text-align:center;text-shadow: 1px 1px 3px #000000;width:100px;margin-left:-30px;height:20px;font-size:14px;">${args[2]}</div>`; 
+var html = `<a  href="http://image.nanbeiji360.com/zhanshan/img/${args[1]}.jpg" data-lightbox="${args[1]}" data-title="${args[2]}" ><div style="width:100%;height:100%;"></div></a><div style="text-align:center;text-shadow: 1px 1px 3px #000000;width:100px;margin-left:-30px;height:20px;font-size:14px;">${args[2]}</div>`; 
 var hs = krpano.get('hotspot['+args[1]+']'); 
 
 var htmlnoclick = `<div style="width:100%;height:100%;"></div><div style="text-align:center;text-shadow: 1px 1px 3px #000000;width:100px;margin-left:-30px;height:20px;font-size:14px;">${args[2]}</div>`; 
 var hs = krpano.get('hotspot['+args[1]+']'); 
 
-var aele = `<a class="${args[1]}_link" href="img/${args[1]}.jpg" data-lightbox="${args[1]}" data-title="${args[2]}" ></a>`;
+var aele = `<a class="${args[1]}_link" href="http://image.nanbeiji360.com/zhanshan/img/${args[1]}.jpg" data-lightbox="${args[1]}" data-title="${args[2]}" ></a>`;
 
 hs.sprite.id=args[1]; 
 var poly = args[1] + "_poly";
@@ -141,8 +148,7 @@ var link = args[1] + "_link";
 
 if(krpano.get(`hotspot[${poly}]`)){
  document.getElementById(args[1]).innerHTML = htmlnoclick; 
- console.log(`.${link}`);
- console.log($(`.${link}`).length);
+
  if( $(`.${link}`).length == 0 ){
  $("#link-area").append(aele);}
 
@@ -203,26 +209,26 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 </action>
 
-<style name="intro_hotspot" renderer="css3d" url="img/animatedhotspot_white.png" onloaded="do_crop_animation(40,40, 30);edit_sprite(get(name),get(imgtitle))" onclick="click_intro(get(name));"/>
+<style name="intro_hotspot" renderer="css3d" url="http://image.nanbeiji360.com/zhanshan/img/animatedhotspot_white.png" onloaded="do_crop_animation(40,40, 30);edit_sprite(get(name),get(imgtitle))" onclick="click_intro(get(name));"/>
 
 <style name="poly_hs" visible="false" enalbed="false" exit="true" alpha="0" handcursor="false" />
 
 	
-	<scene name="scene_IMG_0322_Panorama_ok" title="山门" onstart="" thumburl="panos/IMG_0322_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0322_Panorama_ok" title="山门" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0322_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="176.5610" vlookat="1.1114" fovtype="MFOV" fov="108.762" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0322_Panorama_ok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0322_Panorama_ok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0322_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0322_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0322_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0322_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0322_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0322_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 
@@ -236,21 +242,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0329_Panoramaok" title="天王殿" onstart="" thumburl="panos/IMG_0329_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0329_Panoramaok" title="天王殿" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0329_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="106.745" vlookat="-0.056" fovtype="MFOV" fov="108.762" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0329_Panoramaok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0329_Panoramaok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0329_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0329_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0329_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0329_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0329_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0329_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="144.610" atv="8.492" linkedscene="scene_img_0337_panoramaok" />
@@ -261,21 +267,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0337_Panoramaok" title="天王殿东" onstart="" thumburl="panos/IMG_0337_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0337_Panoramaok" title="天王殿东" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0337_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="-116.726" vlookat="-2.974" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0337_Panoramaok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0337_Panoramaok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0337_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0337_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0337_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0337_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0337_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0337_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="165.693" atv="8.103" linkedscene="scene_img_0344_panoramaok" />
@@ -288,21 +294,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0344_Panoramaok" title="天王殿北" onstart="" thumburl="panos/IMG_0344_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0344_Panoramaok" title="天王殿北" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0344_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="59.145" vlookat="-4.037" fovtype="MFOV" fov="108.762" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0344_Panoramaok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0344_Panoramaok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0344_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0344_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0344_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0344_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0344_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0344_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="-155.863" atv="9.219" linkedscene="scene_img_0337_panoramaok" />
@@ -313,21 +319,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0353_Panoramaok" title="大雄宝殿" onstart="" thumburl="panos/IMG_0353_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0353_Panoramaok" title="大雄宝殿" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0353_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="-177.200" vlookat="-0.620" fovtype="MFOV" fov="118.372" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0353_Panoramaok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0353_Panoramaok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0353_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0353_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0353_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0353_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0353_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0353_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="4.523" atv="29.558" linkedscene="scene_img_0344_panoramaok" />
@@ -337,21 +343,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0365_PanoramaOK" title="大雄宝殿东" onstart="" thumburl="panos/IMG_0365_PanoramaOK.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0365_PanoramaOK" title="大雄宝殿东" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0365_PanoramaOK.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="-162.595" vlookat="-3.825" fovtype="MFOV" fov="98.495" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0365_PanoramaOK.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0365_PanoramaOK.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0365_PanoramaOK.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0365_PanoramaOK.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0365_PanoramaOK.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0365_PanoramaOK.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0365_PanoramaOK.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0365_PanoramaOK.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="92.597" atv="4.630" linkedscene="scene_img_0372_panorama_ok" />
@@ -381,21 +387,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0372_Panorama_ok" title="大雄宝殿北" onstart="" thumburl="panos/IMG_0372_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0372_Panorama_ok" title="大雄宝殿北" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0372_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="-144.360" vlookat="-3.313" fovtype="MFOV" fov="87.060" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0372_Panorama_ok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0372_Panorama_ok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0372_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0372_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0372_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0372_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0372_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0372_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="-28.091" atv="5.967" linkedscene="scene_img_0365_panoramaok" />
@@ -403,21 +409,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0381_Panorama_ok" title="三圣殿" onstart="" thumburl="panos/IMG_0381_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0381_Panorama_ok" title="三圣殿" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0381_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="-180.177" vlookat="-4.984" fovtype="MFOV" fov="97.558" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0381_Panorama_ok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0381_Panorama_ok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0381_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0381_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0381_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0381_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0381_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0381_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="-1.561" atv="30.184" linkedscene="scene_img_0372_panorama_ok" />
@@ -426,21 +432,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0388_Panorama_ok" title="菩提院" onstart="" thumburl="panos/IMG_0388_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0388_Panorama_ok" title="菩提院" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0388_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="21.980" vlookat="-2.862" fovtype="MFOV" fov="87.054" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0388_Panorama_ok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0388_Panorama_ok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0388_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0388_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0388_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0388_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0388_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0388_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="-9.740" atv="-1.409" linkedscene="scene_img_0381_panorama_ok" />
@@ -471,21 +477,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0396_Panorama_OK" title="藏经楼" onstart="" thumburl="panos/IMG_0396_Panorama_OK.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0396_Panorama_OK" title="藏经楼" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0396_Panorama_OK.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="-179.716" vlookat="-3.652" fovtype="MFOV" fov="97.371" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0396_Panorama_OK.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0396_Panorama_OK.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0396_Panorama_OK.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0396_Panorama_OK.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0396_Panorama_OK.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0396_Panorama_OK.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0396_Panorama_OK.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0396_Panorama_OK.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="153.499" atv="1.744" linkedscene="scene_img_0404_panorama_ok" />
@@ -494,21 +500,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0404_Panorama_ok" title="卧佛殿" onstart="" thumburl="panos/IMG_0404_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0404_Panorama_ok" title="卧佛殿" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0404_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="-204.615" vlookat="-12.955" fovtype="MFOV" fov="97.342" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0404_Panorama_ok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0404_Panorama_ok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0404_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0404_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0404_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0404_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0404_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0404_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="-29.362" atv="5.635" linkedscene="scene_img_0396_panorama_ok" />
@@ -517,21 +523,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0412_Panorama_ok" title="法物流通处" onstart="" thumburl="panos/IMG_0412_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0412_Panorama_ok" title="法物流通处" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0412_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="15.718" vlookat="-0.576" fovtype="MFOV" fov="77.648" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0412_Panorama_ok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0412_Panorama_ok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0412_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0412_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0412_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0412_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0412_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0412_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="53.960" atv="2.150" linkedscene="scene_img_0420_panorama_ok" />
@@ -540,21 +546,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0420_Panorama_ok" title="东门广场" onstart="" thumburl="panos/IMG_0420_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0420_Panorama_ok" title="东门广场" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0420_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="156.756" vlookat="-1.666" fovtype="MFOV" fov="85.024" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0420_Panorama_ok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0420_Panorama_ok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0420_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0420_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0420_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0420_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0420_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0420_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="-14.663" atv="-0.052" linkedscene="scene_img_0412_panorama_ok" />
@@ -565,42 +571,42 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0431_Panorama_ok" title="东门" onstart="" thumburl="panos/IMG_0431_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0431_Panorama_ok" title="东门" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0431_Panorama_ok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="178.713" vlookat="-0.247" fovtype="MFOV" fov="96.206" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0431_Panorama_ok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0431_Panorama_ok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0431_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0431_Panorama_ok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0431_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0431_Panorama_ok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0431_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0431_Panorama_ok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="179.711" atv="-0.446" linkedscene="scene_img_0420_panorama_ok" />
 
 	</scene>
 
-	<scene name="scene_IMG_0438_Panoramaok" title="亭1(现毗卢阁)" onstart="" thumburl="panos/IMG_0438_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0438_Panoramaok" title="亭1(现毗卢阁)" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0438_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0438_Panoramaok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0438_Panoramaok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0438_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0438_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0438_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0438_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0438_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0438_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="-128.677" atv="13.709" linkedscene="scene_IMG_0420_Panorama_ok" />
@@ -609,21 +615,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0447_Panoramaok" title="亭2(现毗卢阁)" onstart="" thumburl="panos/IMG_0447_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0447_Panoramaok" title="亭2(现毗卢阁)" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0447_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="168.849" vlookat="1.300" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0447_Panoramaok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0447_Panoramaok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0447_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0447_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0447_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0447_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0447_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0447_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="-27.585" atv="6.367" linkedscene="scene_img_0438_panoramaok" />
@@ -632,21 +638,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0454_Panoramaok" title="亭3(现毗卢阁)" onstart="" thumburl="panos/IMG_0454_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0454_Panoramaok" title="亭3(现毗卢阁)" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0454_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="227.477" vlookat="-6.014" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0454_Panoramaok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0454_Panoramaok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0454_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0454_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0454_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0454_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0454_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0454_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="78.348" atv="4.236" linkedscene="scene_img_0438_panoramaok" />
@@ -654,21 +660,21 @@ tween(hotspot[%1].alpha,1,0.4,default,set(hotspot[%1].alpha,1);tween(hotspot[%1]
 
 	</scene>
 
-	<scene name="scene_IMG_0477_Panoramaok" title="药师佛塔" onstart="" thumburl="panos/IMG_0477_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
+	<scene name="scene_IMG_0477_Panoramaok" title="药师佛塔" onstart="" thumburl="http://image.nanbeiji360.com/zhanshan/panos/IMG_0477_Panoramaok.tiles/thumb.jpg" lat="" lng="" heading="">
 
 		<view hlookat="-183.708" vlookat="-30.594" fovtype="MFOV" fov="96.191" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
 
-		<preview url="panos/IMG_0477_Panoramaok.tiles/preview.jpg" />
+		<preview url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0477_Panoramaok.tiles/preview.jpg" />
 
 		<image type="CUBE" multires="true" tilesize="512">
 			<level tiledimagewidth="2816" tiledimageheight="2816">
-				<cube url="panos/IMG_0477_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0477_Panoramaok.tiles/%s/l3/%v/l3_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="1536" tiledimageheight="1536">
-				<cube url="panos/IMG_0477_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0477_Panoramaok.tiles/%s/l2/%v/l2_%s_%v_%h.jpg" />
 			</level>
 			<level tiledimagewidth="768" tiledimageheight="768">
-				<cube url="panos/IMG_0477_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+				<cube url="http://image.nanbeiji360.com/zhanshan/panos/IMG_0477_Panoramaok.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
 			</level>
 		</image>
 		<hotspot name="spot1" style="skin_hotspotstyle" ath="137.786" atv="-3.674" linkedscene="scene_img_0420_panorama_ok" />

@@ -1,30 +1,34 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<title>krpano - 1</title>
+	<title>全景青岛湛山寺</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<meta http-equiv="x-ua-compatible" content="IE=edge" />
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 	<style>
 		@-ms-viewport { width:device-width; }
 		@media only screen and (min-device-width:800px) { html { overflow:hidden; } }
 		html { height:100%; }
-		body { height:100%; overflow:hidden; margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFFFFF; background-color:#ececec;background-image: url(img/load_black.jpg);background-position: center center;background-repeat:no-repeat;  }
+		body { height:100%; overflow:hidden; margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFFFFF; background-color:#ececec;background-image: url(http://image.nanbeiji360.com/zhanshan/img/load_black.jpg);background-position: center center;background-repeat:no-repeat;  }
 	</style>
 	<link type="text/css" rel="stylesheet" href="css/style.css">
-	<link href="css/lightbox.css" rel="stylesheet">
+	<link href="http://image.nanbeiji360.com/zhanshan/css/lightbox.css" rel="stylesheet">
 	
 </head>
 <body>
 
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/pano.js"></script>
+<script src="http://image.nanbeiji360.com/zhanshan/js/jquery-3.3.1.min.js"></script>
+<script src="http://image.nanbeiji360.com/zhanshan/js/pano.js"></script>
 <div id="pano" style="width:100%;height:100%;">
 	<noscript><table style="width:100%;height:100%;"><tr style="vertical-align:middle;"><td><div style="text-align:center;">ERROR:<br/><br/>Javascript not activated<br/><br/></div></td></tr></table></noscript>
 	<script>
 		
+		embedpano({swf:"tour.swf", xml:"tour.xml", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:true,consolelog : true,					// trace krpano messages also to the browser console
+		  onready : krpano_onready_callback,bgcolor:"#ececec"});
 		function krpano_onready_callback(krpano_interface)
 		 	{
                  krpano = krpano_interface;
@@ -38,9 +42,9 @@
 <div id="start_up">
 	<div id="start_wrapper" style="position:absolute; top:10%; width:100%; ">
     <div id ="size_control" style="margin:0 auto;">
-	   <div id="start_title" style="width:100%;height:16%;display:none;background-image:url(img/start_title.png);background-size:cover;background-position: center center;"></div>
-	   <div id="start_deco" style="width:100%;height:68%;display:none;background-image:url(img/door_deco.png);background-size:cover;background-position: center center;"></div>
-	   <div id="touch_tip" style="width:100%;height:16%;background-image:url(img/touch_tip.png);background-size:cover;background-position: center center;    -webkit-animation: flickerAnimation 2.5s infinite;
+	   <div id="start_title" style="width:100%;height:16%;display:none;background-image:url(http://image.nanbeiji360.com/zhanshan/img/start_title.png);background-size:cover;background-position: center center;"></div>
+	   <div id="start_deco" style="width:100%;height:68%;display:none;background-image:url(http://image.nanbeiji360.com/zhanshan/img/door_deco.png);background-size:cover;background-position: center center;"></div>
+	   <div id="touch_tip" style="width:100%;height:16%;background-image:url(http://image.nanbeiji360.com/zhanshan/img/touch_tip.png);background-size:cover;background-position: center center;    -webkit-animation: flickerAnimation 2.5s infinite;
 	   -moz-animation: flickerAnimation 2.5s infinite;
 	   -o-animation: flickerAnimation 2.5s infinite;
 	   animation: flickerAnimation 2.5s infinite;"></div>
@@ -51,6 +55,9 @@
 <div id="link-area"></div>
 	
 <div id="pano_skin" style="display: none;opacity: 0;">
+		   <div id="zhanshan_title" style="position:absolute;right:8px;top:10px;width:82px;height:30px;background-image:url(http://image.nanbeiji360.com/zhanshan/img/title.png);background-position: center center;background-repeat: no-repeat;background-size:auto 100%;">
+
+		   </div>
 
 		   <div class="intro_overlay" style="position: absolute; top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index: 3; display: none;"></div>
 				<div class="img_caption_wrapper" id="intro_content" style="display:none">
@@ -62,12 +69,7 @@
 					<div class="show_area" >
 							
 						<div class="info_slidee">
-							<!-- <div style="width:100%;font-size:0px"><img src="img/088_01.png" style="width:100%;height:auto;"/></div>
-							<div style="width:100%;font-size:0px"><img src="img/088_02.png" style="width:100%;height:auto;"/></div>
-							<div style="width:100%;font-size:0px"><img src="img/088_03.png" style="width:100%;height:auto;"/></div>
-							<div style="width:100%;font-size:0px"><img src="img/088_04.png" style="width:100%;height:auto;"/></div>
-							<div style="width:100%;font-size:0px"><img src="img/088_05.png" style="width:100%;height:auto;"/></div>
-							<div style="width:100%;font-size:0px"><img src="img/088_06.png" style="width:100%;height:auto;"/></div> -->
+							
 						</div>
 					</div>
 					</div>
@@ -93,11 +95,7 @@
 		</div>
 		<div class="thumbs" style="opacity: 0;">
 			<div class="slidee" style="width:0px;">
-					<!-- <div class="thumb_wrapper" style="padding:4px;height:72px;width: 100px;float: left;">
-							<div class="thumbs_01" style="position:relative;border: 3px solid #FFFFFF;height:100%;width:100%;background-size: cover;background-position: center,center;background-image:url(panos/IMG_0322_Panorama_ok.tiles/thumb.jpg)">
-								<div class="thumbs_01_text" style="pointer-events: none;width: 100%;position: absolute;bottom:0;text-align: center;background: rgba(0, 0, 0, 0.7);font-size: 12px;">山门</div>
-							</div>		
-					</div> -->
+				
 			</div>
 		</div>
 
@@ -134,6 +132,10 @@
 			
 		</div> 
 
+		<div class="uprighticon info">
+			
+		</div> 
+
 		<div class="uprighticon music">
 			
 		</div> 
@@ -146,8 +148,15 @@
 	</div>   -->
 	<div id="bottomicons">
 
-		<div class="bottomicon thumbs_toggle">
+	   <div class="bottomicon thumbs_toggle">
 
+	   </div>
+	   <div class="bottomicon intro">
+
+	   </div>
+	   <div id="like">
+	   <div class="like"></div>
+	   <div class="like-connt"><span class="count">#</span></div>
 	   </div>
 	   
 	   
@@ -155,6 +164,7 @@
 
 
    </div>
+   <div id="popup" style="display:none;z-index:0;pointer-events: none;font-size:18px;line-height:40px;position: absolute;top:50%;left:50%;margin-left:-75px;width:150px;height:40px;border-radius: 6px;background:rgba(0,0,0,0.5);text-align: center;"></div>
 </div>
 
 
@@ -162,11 +172,11 @@
 
 
 
-<script src="js/Pizzicato.min.js"></script>
-<script src="js/sly.min.js"></script>
-<script src="js/plugins.js"></script>
-<script src="js/lightbox.js"></script>
-<script src="js/script.js"></script>
+<script src="http://image.nanbeiji360.com/zhanshan/js/Pizzicato.min.js"></script>
+<script src="http://image.nanbeiji360.com/zhanshan/js/sly.min.js"></script>
+<script src="http://image.nanbeiji360.com/zhanshan/js/plugins.js"></script>
+<script src="http://image.nanbeiji360.com/zhanshan/js/lightbox.js"></script>
+<script src="js/script.min.js"></script>
 <script>
 
 </script>

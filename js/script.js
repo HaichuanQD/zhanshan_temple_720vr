@@ -22,17 +22,16 @@ doordeco.onload = function(){
 };
 
 
-title.src = "img/start_title.png";
-doordeco.src = "img/door_deco.png";
-touch_tip.src = "img/touch_tip.png";
+title.src = "http://image.nanbeiji360.com/zhanshan/img/start_title.png";
+doordeco.src = "http://image.nanbeiji360.com/zhanshan/img/door_deco.png";
+touch_tip.src = "http://image.nanbeiji360.com/zhanshan/img/touch_tip.png";
 
 $("#start_up").click(function(){
 	$(this).animate({opacity:0},{duration:1000,complete:function(){
 		$(this).css("display","none");
 		
 	}});
-	setTimeout(function(){embedpano({swf:"tour.swf", xml:"tour.xml", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:true,consolelog : true,					// trace krpano messages also to the browser console
-		  onready : krpano_onready_callback,bgcolor:"#ececec"});},1000)
+	setTimeout(function(){krpano.call("startup()")},1000)
 	
 		 
 		  
@@ -148,8 +147,7 @@ var thumbprocess = (function(){
                 var thumbname = '.thumb_'+a;
                 
                 if(parseInt($(".activethumb").attr("noreaded"))){
-                $(".activethumb").append(`<div style="pointer-events:none;position:absolute;top:2px;right:2px;height:16px;width:16px;background-image:url(img/readed.png);background-size: cover;background-position: center,center;"></div>`);
-                console.log("rini");
+                $(".activethumb").append(`<div style="pointer-events:none;position:absolute;top:2px;right:2px;height:16px;width:16px;background-image:url(http://image.nanbeiji360.com/zhanshan/img/readed.png);background-size: cover;background-position: center,center;"></div>`);
                 $(".activethumb").attr("noreaded",0);
             };
                 $(".activethumb").removeClass("activethumb");
@@ -205,40 +203,8 @@ var controlicons =(function(){
         
     };
 
-    var judge = function(){
-
-        // if(krpano.get("plugin[WebVR].isavailable")){
-        //     $(DOM.iconcontainer).prepend(`<div class="uprighticon vrenter">
-
-        //     </div>`);
-        // };
-        krpano.addEventListener('vrava',function(){
-            
-         if(krpano.get("webvr.isavailable")){
-            $(DOM.VR).css("height","30px");
-            $(DOM.VR).click( function(){
-                krpano.call("webvr.enterVR();")
-            });
-            
-         };
-        });
-
-        krpano.addEventListener('gyro',function(){
-            if(krpano.get("plugin[skin_gyro].isavailable")){
-               $(DOM.gyro).css("height","30px");
-               $(DOM.gyro).click( function(){
-                   krpano.call("switch(plugin[skin_gyro].enabled); if(plugin[skin_gyro].enabled, skin_showmap(false));")
-               });
-            };
-           });
-
-        if (krpano.get("device.fullscreensupport")){
-            $(DOM.fullscreen).css("height","30px");
-            
-        };
-        
-    };
-    var autoplay = 1;//开头自动播放音乐设置在这里
+    
+    var autoplay = 0;//开头自动播放音乐设置在这里
     var playing = false;
 
     var loadmusic = function(){
@@ -303,11 +269,47 @@ var controlicons =(function(){
 
     return {
         init : function(){
-            judge();
+            
             loadmusic();
             eventlisten();
 
         },
+        judge_vr_gryo : function(){
+
+            // if(krpano.get("plugin[WebVR].isavailable")){
+            //     $(DOM.iconcontainer).prepend(`<div class="uprighticon vrenter">
+    
+            //     </div>`);
+            // };
+            krpano.addEventListener('vrava',function(){
+                
+             if(krpano.get("webvr.isavailable")){
+                $(DOM.VR).css("height","30px");
+                $(DOM.VR).click( function(){
+                    krpano.call("webvr.enterVR();")
+                });
+                
+             };
+            });
+    
+            krpano.addEventListener('gyro',function(){
+                if(krpano.get("plugin[skin_gyro].isavailable")){
+                   $(DOM.gyro).css("height","30px");
+                   $(DOM.gyro).click( function(){
+                       krpano.call("switch(plugin[skin_gyro].enabled); if(plugin[skin_gyro].enabled, skin_showmap(false));")
+                   });
+                };
+               });
+    
+           
+        },
+        judge_fullscreen:function(){
+            if (krpano.get("device.fullscreensupport")){
+                $(DOM.fullscreen).css("height","30px");
+                
+            };
+            
+        }
     }
 
 
@@ -450,15 +452,15 @@ var infoslide = new Sly($(".show_area"),{
 var sta;
 
 var intro_html = {
-    temple:`<div style="width:100%;font-size:0px"><img src="img/088_01.png" style="width:100%;height:auto;"/></div>
-    <div style="width:100%;font-size:0px"><img src="img/088_02.png" style="width:100%;height:auto;"/></div>
-    <div style="width:100%;font-size:0px"><img src="img/088_03.png" style="width:100%;height:auto;"/></div>
-    <div style="width:100%;font-size:0px"><img src="img/088_04.png" style="width:100%;height:auto;"/></div>
-    <div style="width:100%;font-size:0px"><img src="img/088_05.png" style="width:100%;height:auto;"/></div>
-    <div style="width:100%;font-size:0px"><img src="img/088_06.png" style="width:100%;height:auto;"/></div>`,
-    monk:`<div style="width:100%;font-size:0px"><img src="img/099_01.png" style="width:100%;height:auto;"/></div>
-    <div style="width:100%;font-size:0px"><img src="img/099_02.png" style="width:100%;height:auto;"/></div>`,
-    wechat:`<div style="width:100%;font-size:0px"><img src="img/0010.png" style="width:100%;height:auto;"/></div>`
+    temple:`<div style="width:100%;font-size:0px"><img src="http://image.nanbeiji360.com/zhanshan/img/088_01.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="http://image.nanbeiji360.com/zhanshan/img/088_02.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="http://image.nanbeiji360.com/zhanshan/img/088_03.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="http://image.nanbeiji360.com/zhanshan/img/088_04.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="http://image.nanbeiji360.com/zhanshan/img/088_05.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="http://image.nanbeiji360.com/zhanshan/img/088_06.png" style="width:100%;height:auto;"/></div>`,
+    monk:`<div style="width:100%;font-size:0px"><img src="http://image.nanbeiji360.com/zhanshan/img/099_01.png" style="width:100%;height:auto;"/></div>
+    <div style="width:100%;font-size:0px"><img src="http://image.nanbeiji360.com/zhanshan/img/099_02.png" style="width:100%;height:auto;"/></div>`,
+    wechat:`<div style="width:100%;font-size:0px"><img src="http://image.nanbeiji360.com/zhanshan/img/0010.png" style="width:100%;height:auto;"/></div>`
 }
 
 function end (){
@@ -510,7 +512,7 @@ function info_init (){
     backgroundIMG.onload = function(){
         setintro_size();
     };
-    backgroundIMG.src = "img/background.jpg";
+    backgroundIMG.src = "http://image.nanbeiji360.com/zhanshan/img/background.jpg";
     
     
     
@@ -579,7 +581,7 @@ function setsize(tw,th,mw,mh){
 }
 
 function setintro_size(){
-    $(".bg_container").css("background-image",`url(img/background.jpg)`);
+    $(".bg_container").css("background-image",`url(http://image.nanbeiji360.com/zhanshan/img/background.jpg)`);
     infoslide.init();
     infoslide.on("move",function(){ infoslide.reload(); }); 
     $(".caption_intro").css("width",setsize()[0]);
@@ -593,19 +595,101 @@ function setintro_size(){
     }});
 }
 
+
+
+//点赞模块
+
+getcount();
+updateUI();
+
+
+  function updateUI(){if ( !judge() ){
+      $(".like").addClass("liked");
+  };}
+
+
+  $("#like").click( buttonclick );
+  function getcount(){
+    $.ajax({
+        url:'data.php',
+        method:'POST',
+        data:{ scene: "zhanshan" },
+        dataType:'JSON',
+        success:function(data){
+            var count = data;
+            $(".count").text(count);
+            console.log(count);
+            console.log('Database like_count loaded successfully!')
+        },
+        error:function(){
+            console.log('wrong')
+        }
+    });
+  }
+    function judge (){
+        if( localStorage.getItem("zhanshan_liked") ){
+          return false
+        } else {return true}
+    }
+
+    function buttonclick (){
+      if( judge() ){
+        $.ajax({
+            url:'data.php',
+            method:'POST',
+            data:{ like: "zhanshan" },
+            dataType:'JSON',
+            success:function(data){
+                var count = data;
+                $(".count").text(count);
+                // alert("点赞成功了吗？")
+                localStorage.setItem("zhanshan_liked",1);
+                updateUI();
+                console.log('Database like_count loaded successfully!');
+                popup("点赞成功！");
+            },
+            error:function(error){
+                console.log(error)
+        }
+
+        })
+    } else {
+        popup("赞过了 :)");
+    }
+
+    }
+
+    function popup(text){
+        $("#popup").text(text);
+        $("#popup").fadeIn();
+        setTimeout(function(){$("#popup").fadeOut();},1500)
+    }
+
+
+document.addEventListener("krpanoready",function(){
+
+    thumbprocess.thumbsinit();
+    controlicons.judge_vr_gryo();
+
+
+});
+
+
 document.addEventListener("setskin",function(){
     $("#pano_skin").css("display","block");
+    thumbprocess.thumbsonresize();
     $("#pano_skin").animate({opacity:1.0},{duration:1500});
     $(".info_slidee").html(intro_html.temple);
-    thumbprocess.thumbsinit();
+    // thumbprocess.thumbsinit();
     controlicons.init();
+    controlicons.judge_fullscreen();
     //track_mouse();//屏幕中心点的ath，ahv显示模块
     poly_spot.init();
     
 
 });
 
-$("#namotext").click(
+$("#zhanshan_title,.info,.intro").click(
     function(){
         info_init();
     }
